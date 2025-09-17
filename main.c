@@ -13,10 +13,11 @@
 #define DEFAULT_PORT 1717
 #define LOG_FILE "/var/log/imageserver.log"
 #define BUFFER_SIZE 4096
-#define DIR_ROJAS "rojas"
-#define DIR_VERDES "verdes"
-#define DIR_AZULES "azules"
-#define DIR_FILTRADO "filtrado"
+#define DIR_ROJAS "/var/lib/imageserver/rojas"
+#define DIR_VERDES "/var/lib/imageserver/verdes"
+#define DIR_AZULES "/var/lib/imageserver/azules"
+#define DIR_FILTRADO "/var/lib/imageserver/filtrado"
+
 
 void log_event(const char *client_ip, const char *filename, const char *status) {
     FILE *f = fopen(LOG_FILE, "a");

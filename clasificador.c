@@ -1,6 +1,5 @@
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb-master/stb_image.h"
-
+#include "stb-master/stb_image_write.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

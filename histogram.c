@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stb-master/stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb-master/stb_image_write.h"
-
 
 void to_grayscale(unsigned char *original_data,unsigned char *new_data,  int width, int height){
  	int size = width * height;

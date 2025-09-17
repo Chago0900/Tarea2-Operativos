@@ -1,0 +1,9 @@
+[0;1;32m●[0m imageserver.service - Image Server Daemon
+     Loaded: loaded (]8;;file://debian/etc/systemd/system/imageserver.service/etc/systemd/system/imageserver.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Wed 2025-09-17 00:13:35 CDT; 2min 14s ago
+   Main PID: 15806 (imageserver)
+      Tasks: 1[0;38;5;245m (limit: 8896)[0m
+     Memory: 5.6M
+        CPU: 237ms
+     CGroup: /system.slice/imageserver.service
+             └─[0;38;5;245m15806 /usr/local/bin/imageserver[0m
