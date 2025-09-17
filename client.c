@@ -148,11 +148,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    printf("=== Cliente de Procesamiento de Imágenes ===\n");
     printf("Servidor: %s:%d\n", server_ip, port);
-    printf("Funciones: Clasificación por color + Ecualización de histograma\n");
     printf("Instrucciones:\n");
-    printf("- Ingresa el nombre del archivo de imagen (con ruta si es necesario)\n");
+    printf("- Ingrese el nombre del archivo de imagen\n");
     printf("- Escribe 'Exit' para terminar\n");
     printf("===============================================\n\n");
 
@@ -160,7 +158,7 @@ int main(int argc, char *argv[]) {
     int image_count = 0;
     
     while (1) {
-        printf("Ingresa nombre de archivo de imagen (o 'Exit' para salir): ");
+        printf("Ingrese nombre de archivo de imagen (o 'Exit' para salir): ");
         fflush(stdout);
         
         if (!fgets(filename, sizeof(filename), stdin)) {
@@ -184,7 +182,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
         
-        printf("\n--- Procesando imagen #%d: %s ---\n", ++image_count, filename);
+        printf("\nProcesando imagen #%d: %s ---\n", ++image_count, filename);
         
         if (send_image_to_server(server_ip, port, filename) == 0) {
             printf("✓ Imagen procesada exitosamente\n");
@@ -196,7 +194,6 @@ int main(int argc, char *argv[]) {
     }
     
     printf("Total de imágenes procesadas: %d\n", image_count);
-    printf("¡Hasta luego!\n");
     
     return 0;
 }

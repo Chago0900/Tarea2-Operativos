@@ -2,7 +2,7 @@
 TARGET = imageserver
 
 # Archivos fuente
-SRCS = main.c clasificador.c
+SRCS = main.c clasificador.c histogram.c
 
 # Archivos objeto
 OBJS = $(SRCS:.c=.o)
