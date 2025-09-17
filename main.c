@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <endian.h>   // be64toh
 #include "clasificador.h"
+#include "histogram_equalizer.h"
 
 #define DEFAULT_PORT 1717
 #define LOG_FILE "/var/log/imageserver.log"
@@ -53,6 +54,7 @@ int main() {
     ensure_dir_exists("rojas");
     ensure_dir_exists("verdes");
     ensure_dir_exists("azules");
+    ensure_dir_exists("equalized");
 
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) { perror("socket"); return 1; }
@@ -135,16 +137,46 @@ int main() {
             continue;
         }
 
-        // clasificar (usa tu función existente)
-        if (classify_image(namebuf, namebuf, "rojas", "verdes", "azules") == 0) {
-            send(client_fd, "Imagen clasificada con éxito\n", 30, 0);
-            log_event(client_ip, namebuf, "OK");
+        char response[512] = {0};
+        char hist_output[512];
+        int classify_result = 0, histogram_result = 0;
+
+        printf("Procesando imagen %s...\n", namebuf);
+
+        // 1. Color Classification
+        classify_result = classify_image(namebuf, namebuf, "rojas", "verdes", "azules");
+        
+        // 2. Histogram Equalization (process original file before classification moves it)
+        generate_histogram_filename(namebuf, hist_output, sizeof(hist_output));
+        histogram_result = process_histogram_equalization(namebuf, hist_output);
+        
+        // 1. Color Classification (this will move the original file to appropriate directory)
+        classify_result = classify_image(namebuf, namebuf, "rojas", "verdes", "azules");
+
+        // Generate response
+        if (classify_result == 0 && histogram_result == 0) {
+            snprintf(response, sizeof(response), 
+                    "OK: Imagen clasificada y ecualizada exitosamente\nEcualizada: %s\n", 
+                    hist_output);
+            log_event(client_ip, namebuf, "BOTH OK");
+        } else if (classify_result == 0) {
+            snprintf(response, sizeof(response), 
+                    "PARCIAL: Clasificación OK, Error en ecualización\n");
+            log_event(client_ip, namebuf, "CLASSIFY OK, HISTOGRAM ERROR");
+        } else if (histogram_result == 0) {
+            snprintf(response, sizeof(response), 
+                    "PARCIAL: Error clasificación, Ecualización OK: %s\n", hist_output);
+            log_event(client_ip, namebuf, "CLASSIFY ERROR, HISTOGRAM OK");
         } else {
-            send(client_fd, "Error clasificando imagen\n", 27, 0);
-            log_event(client_ip, namebuf, "ERROR");
+            snprintf(response, sizeof(response), 
+                    "ERROR: Falló clasificación y ecualización\n");
+            log_event(client_ip, namebuf, "BOTH ERROR");
         }
 
+        send(client_fd, response, strlen(response), 0);
         close(client_fd);
+        
+        printf("Procesamiento completado para %s\n", namebuf);
     }
 
     close(server_fd);
